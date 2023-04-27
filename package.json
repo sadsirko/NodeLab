@@ -1,0 +1,36 @@
+{
+  "name": "booking",
+  "version": "1.0.0",
+  "description": "lab on node",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sadsirko/NodeLab.git"
+  },
+  "keywords": [
+    "nodeJS"
+  ],
+  "author": "sadsirko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sadsirko/NodeLab/issues"
+  },
+  "homepage": "https://github.com/sadsirko/NodeLab#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "crypto-js": "^4.1.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.0",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "uuid": "^9.0.0"
+  }
+}
