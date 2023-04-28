@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-  <%- include('../partials/header', { loggedIn: loggedIn }) %>
+  <%- include('./partials/header') %>
 
   <h1><%= ad.name %></h1>
   <img src="<%= ad.photo %>" alt="<%= ad.name %>">
@@ -15,6 +15,6 @@
   <p>Address: <%= ad.address %></p>
   <p>Details: <%= ad.detail %></p>
 
-  <%- include('../partials/footer') %>
+  <%- include('./partials/footer') %>
 </body>
 </html>

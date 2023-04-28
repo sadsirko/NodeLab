@@ -35,8 +35,7 @@ router.get('/allAdvertisement', (req, res) => {
   // Зчитування даних з файлу
   let savedData = fs.readFileSync(filePath);
   let ads = JSON.parse(savedData);
-  console.dir(ads)
-  res.render('advertisements/show', { allAdvertisement: ads });
+  res.render('advertisements/show', { allAdvertisement: ads ,res : res});
 });
 
 router.delete('/delete/:id', isAuthenticated, (req, res) => {

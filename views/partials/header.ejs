@@ -1,17 +1,45 @@
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="/api/advertisement/allAdvertisement">Home</a>
+      <ul class="navbar-nav">
+        <!-- <% console.log(locals.user); %>
+        <% console.dir(res.req.session); %> -->
 
-  <header>
-    <nav class="navbar">
-      <div class="container">
-        <a class="navbar-brand" href="/api/advertisement/allAdvertisement">Home</a>
-        <ul class="nav">
+        <% if ('user' in res.req.session) { %>
           <li class="nav-item">
-            <a class="nav-link" href="/api/auth/login">Login</a>
+            <a class="nav-link" href="/api/user/profile">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/api/auth/logout">Sign Out</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/api/advertisement/create">Create Advertisement</a>
+          </li>
+        <% } else {%>
+          <li class="nav-item">
+            <a class="nav-link" href="/api/auth/login" data-protected="true">Login</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/api/auth/signup">Sign Up</a>
           </li>
-        </ul>
-      </div>
-    </nav>
-  </header>
-  
+        <% } %>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const protectedLinks = document.querySelectorAll('a[data-protected="true"]');
+    
+    protectedLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        if ( locals.user ? 'true' : 'false' ) {
+          e.preventDefault();
+          window.location.href = "/api/auth/login";
+        }
+      });
+    });
+  });
+</script>

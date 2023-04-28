@@ -127,12 +127,12 @@ router.post('/login', async (req, res, next) => {
     try {
       if (err) {
         console.error(err);
-        return res.status(500).send("An internal server error occurred.");
+        return res.status(500).send("An internal server error occurred.", res);
       }
 
       if (!user) {
         console.error(info); 
-        return res.status(401).render('auth/login', { error: "Incorrect username or password." });
+        return res.status(401).render('auth/login', { error: "Incorrect username or password.", res });
         
       }
 
@@ -141,7 +141,8 @@ router.post('/login', async (req, res, next) => {
 
         const body = { _id: user.id, username: user.username };
         const token = jwt.sign({ user: body }, 'TOP_SECRET');
-
+        req.session.user = user;
+        res.locals.user = user;
         return res.redirect('/api/advertisement/allAdvertisement');
       });
     } catch (error) {
@@ -171,15 +172,14 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-
 // Реєстрація
 router.get('/signup', (req, res) => {
-  res.render('auth/signup');
+  res.render('auth/signup', {res});
 });
 
 // Вхід
 router.get('/login', (req, res) => {
-  res.render('auth/login', {req});
+  res.render('auth/login', {res});
 });
 
 // Тут будуть ваші маршрути для POST-запитів до /auth/signup та /auth/login
