@@ -32,7 +32,7 @@ router.patch('/change-role/:id', isAuthenticated, isAdmin, (req, res) => {
   res.status(200).send(`User role changed to ${users.arr[index].role}.`);
 });
 
-router.get('/profile', isAuthenticated, (req, res) => {
+router.get('/profile',  (req, res) => {
   let savedData = fs.readFileSync(usersFilePath);
   let users = JSON.parse(savedData);
   console.log(req.session.user);

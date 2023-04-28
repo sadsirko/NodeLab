@@ -126,4 +126,9 @@ router.patch('/:id/approve', isAuthenticated, isModerator, (req, res) => {
   res.status(200).json(ads.arr[adIndex]);
 });
 
+
+router.get('/create', isAuthenticated, (req, res) => {
+  console.log("aaaaaaaaaaaaaaarrrrrrrrr")
+  res.render('advertisements/create', { res});
+});
 module.exports = router;

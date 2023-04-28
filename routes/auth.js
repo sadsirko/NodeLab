@@ -182,6 +182,16 @@ router.get('/login', (req, res) => {
   res.render('auth/login', {res});
 });
 
+router.get('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("An internal server error occurred.");
+    }
+    res.clearCookie('connect.sid'); // Clear the session cookie
+    res.redirect('/api/auth/login');
+  });
+});
 // Тут будуть ваші маршрути для POST-запитів до /auth/signup та /auth/login
 
 module.exports = router;

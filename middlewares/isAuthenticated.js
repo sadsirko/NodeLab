@@ -2,7 +2,7 @@
 const passport = require('passport')
 
 function isAuthenticated(req, res, next) {
-    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    passport.authenticate('jwt', { session: true }, (err, user, info) => {
       if (err || !user) {
         res.redirect('api/auth/login');
       }
