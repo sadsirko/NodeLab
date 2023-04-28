@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<%- include('../partials/header') %>
+
+<h2>Sign Up</h2>
+<% if (typeof error !== 'undefined') { %>
+    <div class="alert alert-danger" role="alert">
+      <%= error %>
+    </div>
+  <% } %>
+  
+<form action="/api/auth/signup" method="post">
+      <div>
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" required>
+  </div>
+  <div>
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required>
+  </div>
+  <div>
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" required>
+  </div>
+  <button type="submit">Sign Up</button>
+</form>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

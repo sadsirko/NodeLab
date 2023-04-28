@@ -51,10 +51,14 @@ router.post('/signup', function(req, res, next) {
     // console.log(newUser)
 
     fs.readFile(usersFilePath, (err, data) => {
+      if (!req.body.username || !req.body.email || !req.body.password) {
+        req.flash('error', 'All fields are required.');
+        return res.redirect('/signup');
+      }
       if (err) {
         if (err.code === 'ENOENT') {
           fs.writeFileSync(usersFilePath, JSON.stringify({ arr: [newUser] }), 'utf8');
-          res.send("registered");
+          return;
         } else {
           return next(err);
         }
@@ -66,13 +70,13 @@ router.post('/signup', function(req, res, next) {
         // Перевірка, чи існує користувач з таким же ім'ям користувача
         const existingUser = users.find(user => user.username === req.body.username);
         if (existingUser) {
-          return res.status(400).send("Username already exists.");
+          return res.status(400).render('auth/signup', { error: "Username already exists." });
         }
 
         // Перевірка, чи існує користувач з такою ж електронною адресою
         const existingEmail = users.find(user => user.email === req.body.email);
         if (existingEmail) {
-          return res.status(400).send("Email already exists.");
+          return res.status(400).render('auth/signup', { error: "Email already exists." });
         }
 
         // console.log(newUser)
@@ -82,7 +86,10 @@ router.post('/signup', function(req, res, next) {
       }
     });
   });
-});
+
+
+
+  res.redirect('login');});
 
 passport.use('login', new LocalStrategy(
   function(username, password, done) {
@@ -125,7 +132,8 @@ router.post('/login', async (req, res, next) => {
 
       if (!user) {
         console.error(info); 
-        return res.status(401).send("Incorrect username or password.");
+        return res.status(401).render('auth/login', { error: "Incorrect username or password." });
+        
       }
 
       req.login(user, { session: false }, async (error) => {
@@ -134,7 +142,7 @@ router.post('/login', async (req, res, next) => {
         const body = { _id: user.id, username: user.username };
         const token = jwt.sign({ user: body }, 'TOP_SECRET');
 
-        return res.json({ token });
+        return res.redirect('/api/advertisement/allAdvertisement');
       });
     } catch (error) {
       return next(error);
@@ -162,5 +170,18 @@ passport.deserializeUser((id, done) => {
     return done(null, user);
   });
 });
+
+
+// Реєстрація
+router.get('/signup', (req, res) => {
+  res.render('auth/signup');
+});
+
+// Вхід
+router.get('/login', (req, res) => {
+  res.render('auth/login', {req});
+});
+
+// Тут будуть ваші маршрути для POST-запитів до /auth/signup та /auth/login
 
 module.exports = router;

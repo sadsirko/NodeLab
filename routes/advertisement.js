@@ -35,11 +35,8 @@ router.get('/allAdvertisement', (req, res) => {
   // Зчитування даних з файлу
   let savedData = fs.readFileSync(filePath);
   let ads = JSON.parse(savedData);
-  
-  // let jsonAds = JSON.stringify(ads);
-  // console.log();
-  // Збереження оголошення в базі даних або в інший сховище
-  res.status(201).json(ads);
+  console.dir(ads)
+  res.render('advertisements/show', { allAdvertisement: ads });
 });
 
 router.delete('/delete/:id', isAuthenticated, (req, res) => {
@@ -95,6 +92,10 @@ router.get('/advertisementsById/:id', (req, res) => {
   res.status(200).json(ad);
 });
 
+// router.get('/advertisements', (req, res) => {
+//   // Fetch your advertisements data
+//   res.render('advertisements/index', { advertisements: advertisements });
+// });
 
 // GET /advertisements/author/:userId - Отримання всіх оголошень користувача за ID автора
 router.get('/author/:userId', (req, res) => {

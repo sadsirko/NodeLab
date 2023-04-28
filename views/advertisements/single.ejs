@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= ad.name %></title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <%- include('../partials/header', { loggedIn: loggedIn }) %>
+
+  <h1><%= ad.name %></h1>
+  <img src="<%= ad.photo %>" alt="<%= ad.name %>">
+  <p>Price: <%= ad.price %></p>
+  <p>Address: <%= ad.address %></p>
+  <p>Details: <%= ad.detail %></p>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

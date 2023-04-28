@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Advertisements</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <h1>All Advertisements</h1>
+  <div class="ad-container">
+    <% allAdvertisement.arr.forEach(function(ad) { %>
+      <div class="ad">
+
+        <h2> <%= ad.name %></h2>
+        <p>price: <%= ad.detail %></p>
+        <form action="/choose" method="GET">
+            <input type="hidden" name="id" value="<%= ad.id %>">
+            <button type="submit">Choose</button>
+          </form>
+      </div>
+    <% }); %>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

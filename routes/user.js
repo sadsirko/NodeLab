@@ -32,4 +32,8 @@ router.patch('/change-role/:id', isAuthenticated, isAdmin, (req, res) => {
   res.status(200).send(`User role changed to ${users.arr[index].role}.`);
 });
 
+router.get('/profile', isAuthenticated, (req, res) => {
+  res.render('auth/profile', { user: req.user });
+});
+
 module.exports = router;
