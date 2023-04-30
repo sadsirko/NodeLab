@@ -15,23 +15,26 @@ const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: 'TOP_SECRET'
 };
+const authenticate = passport.authenticate('local', {session: true});
 
-passport.use('jwt', new JwtStrategy(jwtOptions, function(jwtPayload, done) {
-  fs.readFile(usersFilePath, (err, data) => {
-    if (err) return done(err);
+// passport.use('jwt', new JwtStrategy(jwtOptions, function(jwtPayload, done) {
+//   fs.readFile(usersFilePath, (err, data) => {
+//     if (err) return done(err);
 
-    const usersData = JSON.parse(data);
-    const users = usersData.arr;
+//     const usersData = JSON.parse(data);
+//     const users = usersData.arr;
 
-    const user = users.find(user => user.id == jwtPayload.user._id);
+//     const user = users.find(user => user.id == jwtPayload.user._id);
 
-    if (user) {
-      return done(null, user);
-    } else {
-      return done(null, false);
-    }
-  });
-}));
+//     if (user) {
+//       return done(null, user);
+//     } else {
+//       return done(null, false);
+//     }
+//   });
+// }));
+
+
 
 // Реєстрація нового користувача
 router.post('/signup', function(req, res, next) {
@@ -91,39 +94,11 @@ router.post('/signup', function(req, res, next) {
 
   res.redirect('login');});
 
-passport.use('login', new LocalStrategy(
-  function(username, password, done) {
-    fs.readFile(usersFilePath, (err, data) => {
-      if (err) return done(err);
-
-      const usersData = JSON.parse(data);
-      // console.log(usersData)   
-      // console.log(username)
-      
-      const users = usersData.arr;
-      const user = users.find(user => user.username == username);
-      // console.log(user)
-      
-      // Якщо користувача не знайдено, повертаємо повідомлення про неправильне ім'я користувача
-      if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-
-      // console.log(username)
-      const hashedPassword = crypto.pbkdf2Sync(password, Buffer.from(user.salt, 'hex'), 310000, 32, 'sha256');
-      
-      // Якщо пароль не збігається, повертаємо повідомлення про неправильний пароль
-      if (hashedPassword.toString('hex') !== user.hashedPassword) {
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-
-      return done(null, user);
-    });
-  }
-));
-
-router.post('/login', async (req, res, next) => {
-  passport.authenticate('login', async (err, user, info) => {
+  require('../middlewares/config-passport');
+  
+  router.post('/login', authenticate, async (req, res, next) => {
+  passport.authenticate('local', async (err, user, info) => {
+    console.log(user)
     try {
       if (err) {
         console.error(err);
@@ -151,26 +126,6 @@ router.post('/login', async (req, res, next) => {
   })(req, res, next);
 });
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-// Десеріалізація користувача
-passport.deserializeUser((id, done) => {
-  fs.readFile(usersFilePath, (err, data) => {
-    if (err) return done(err);
-
-    const usersData = JSON.parse(data);
-    const users = usersData.arr;
-
-    const user = users.find(user => user.id === id);
-    if (!user) {
-      return done(null, false);
-    }
-
-    return done(null, user);
-  });
-});
 
 // Реєстрація
 router.get('/signup', (req, res) => {

@@ -32,12 +32,14 @@ router.patch('/change-role/:id', isAuthenticated, isAdmin, (req, res) => {
   res.status(200).send(`User role changed to ${users.arr[index].role}.`);
 });
 
-router.get('/profile',  (req, res) => {
+router.get('/profile', isAuthenticated, (req, res) => {
   let savedData = fs.readFileSync(usersFilePath);
   let users = JSON.parse(savedData);
   console.log(req.session.user);
   console.log("in profile");
-  const index = users.arr.findIndex(user => user.id === req.session.user.id);
+  console.log("in profile");
+
+  const index = users.arr.findIndex(user => user.id == req.session.passport.user);
   console.log(index)
   if (index === -1) {
     return res.status(404).send("User not found.");

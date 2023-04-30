@@ -8,22 +8,21 @@
 </head>
 <body>
   <%- include('../partials/header') %>
-
-  <h1>All Advertisements</h1>
-  <div class="ad-container">
-    <% allAdvertisement.arr.forEach(function(ad) { %>
-      <div class="ad">
-
-        <h2> <%= ad.name %></h2>
-        <p>price: <%= ad.detail %></p>
-        <form action="/choose" method="GET">
-            <input type="hidden" name="id" value="<%= ad.id %>">
+  <div class="container">
+    <h1>All Advertisements</h1>
+    <div class="ad-container">
+      <% allAdvertisement.arr.forEach(function(ad) { %>
+        <div class="ad">
+          <h2> <%= ad.name %></h2>
+          <p>detail: <%= ad.detail %></p>
+          <a href="/api/advertisement/advertisementsById/<%= ad.id %>">
             <button type="submit">Choose</button>
-          </form>
-      </div>
-    <% }); %>
+          </a>
+        </div>
+      <% }); %>
+    </div>
   </div>
-
   <%- include('../partials/footer') %>
 </body>
+
 </html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Advertisements</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <div class="container">
+    <h1>My Advertisements</h1>
+    <div class="ad-container">
+      <% allAdvertisement.forEach(function(ad) { %>
+        <div class="ad">
+          <h2> <%= ad.name %></h2>
+          <p>address: <%= ad.address %></p>
+          <p>price: <%= ad.price %></p>
+          <form action="/api/advertisement/delete/<%= ad.id %>?_method=DELETE" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="id" value="<%= ad.id %>">
+            <button type="submit">Delete</button>
+          </form>
+          <a href="/api/advertisement/advertisementsById/<%= ad.id %>">
+            <button type="submit">View</button>
+          </a>
+          <a href="/api/advertisement/updateAdvertisement/<%= ad.id %>">
+            <button type="submit">Edit</button>
+          </a>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

@@ -3,10 +3,7 @@
     <div class="container">
       <a class="navbar-brand" href="/api/advertisement/allAdvertisement">Home</a>
       <ul class="navbar-nav">
-        <!-- <% console.log(locals.user); %>
-        <% console.dir(res.req.session); %> -->
-
-        <% if ('user' in res.req.session) { %>
+        <% if ('passport' in res.req.session) { %>
           <li class="nav-item">
             <a class="nav-link" href="/api/user/profile">Profile</a>
           </li>
@@ -14,7 +11,10 @@
             <a class="nav-link" href="/api/auth/logout">Sign Out</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="create">Create Advertisement</a>
+            <a class="nav-link" href="/api/advertisement/create">Create Advertisement</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/api/advertisement/author/<%= res.req.session.passport.user %>">My adv</a>
           </li>
         <% } else {%>
           <li class="nav-item">

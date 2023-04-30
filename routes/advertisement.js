@@ -13,7 +13,7 @@ router.post('/createAdvertisement', isAuthenticated, (req, res) => {
   // Зчитування даних з файлу
   let savedData = fs.readFileSync(filePath);
   let ads = JSON.parse(savedData);
-  
+  console.log(req.body.detail, req.body.address, req.user.id.toString(), req.body.price, req.body.photo, req.body.name)
   const advertisement = new Advertisement(
      req.body.detail, req.body.address, req.user.id.toString(), req.body.price, req.body.photo, req.body.name);
 
@@ -26,9 +26,8 @@ router.post('/createAdvertisement', isAuthenticated, (req, res) => {
   // Запис оновлених даних назад у файл
   fs.writeFileSync(filePath, jsonAds);
 
-  console.log();
   // Збереження оголошення в базі даних або в інший сховище
-  res.status(201).json(advertisement);
+  res.redirect('/api/advertisement/author/' + req.user.id.toString() )
 });
 
 router.get('/allAdvertisement', (req, res) => {
@@ -72,9 +71,9 @@ router.delete('/delete/:id', isAuthenticated, (req, res) => {
 
   // Запис оновлених даних назад у файл
   fs.writeFileSync(filePath, jsonAds);
+  res.redirect('/api/advertisement/author/' + req.user.id.toString() )
 
   // Відправлення відповіді
-  res.status(200).send("Advertisement deleted.");
 });
 
 // GET /advertisements/:id - Отримання оголошення за ID
@@ -83,27 +82,65 @@ router.get('/advertisementsById/:id', (req, res) => {
   let ads = JSON.parse(savedData);
 
   const ad = ads.arr.find(ad => ad.id === req.params.id);
-
+  console.log(req.params.id)
   if (!ad) {
     return res.status(404).send("Advertisement not found.");
   }
+  res.render('advertisements/advertisment', { ad: ad , res});
 
-  res.status(200).json(ad);
 });
 
-// router.get('/advertisements', (req, res) => {
-//   // Fetch your advertisements data
-//   res.render('advertisements/index', { advertisements: advertisements });
-// });
-
-// GET /advertisements/author/:userId - Отримання всіх оголошень користувача за ID автора
-router.get('/author/:userId', (req, res) => {
+router.put('/updateAdvertisement/:id', isAuthenticated, (req, res) => {
+  const adId = req.params.id;
   let savedData = fs.readFileSync(filePath);
   let ads = JSON.parse(savedData);
 
+  let adIndex = ads.arr.findIndex(ad => ad.id === adId);
+
+  if (adIndex !== -1 && ads.arr[adIndex].authorId === req.user.id) {
+    let updatedAd = req.body;
+    console.log(updatedAd)
+    console.log(ads.arr[adIndex])
+    ads.arr[adIndex].name = updatedAd.name;
+    ads.arr[adIndex].address = updatedAd.address;
+    ads.arr[adIndex].price = updatedAd.price;
+    ads.arr[adIndex].detail = updatedAd.detail;
+    console.log(ads.arr[adIndex])
+    fs.writeFileSync(filePath, JSON.stringify(ads));
+    res.redirect('/api/advertisement/author/' + req.user.id.toString() )
+
+  } else {
+    res.status(404).send("Advertisement not found or not authorized.");
+  }
+
+});
+
+router.get('/updateAdvertisement/:id', isAuthenticated, (req, res) => {
+  const adId = req.params.id;
+  let savedData = fs.readFileSync(filePath);
+  let ads = JSON.parse(savedData);
+
+  let adIndex = ads.arr.findIndex(ad => ad.id === adId);
+  console.log(adIndex)
+  console.log(ads.arr[adIndex])
+  console.log(ads.arr[adIndex].userId,req.user.id)
+  if (adIndex !== -1 && ads.arr[adIndex].authorId === req.user.id) {
+    res.render('advertisements/edit', { ad: ads.arr[adIndex], res})
+  }
+  else {
+    res.status(404).send("You can edit only your advertisements.");
+  }
+
+});
+
+// GET /advertisements/author/:userId - Отримання всіх оголошень користувача за ID автора
+router.get('/author/:userId',isAuthenticated, (req, res) => {
+  let savedData = fs.readFileSync(filePath);
+  let ads = JSON.parse(savedData);
+  console.log(req.params.userId)
   const userAds = ads.arr.filter(ad => ad.authorId === req.params.userId);
   console.log(userAds);
-  res.status(200).json(userAds);
+  res.render('advertisements/userAdv', {allAdvertisement:userAds, res});
 });
 
 // PATCH /advertisements/:id/approve - Зміна поля "approved" для користувачів з роллю "moderator"
@@ -128,7 +165,6 @@ router.patch('/:id/approve', isAuthenticated, isModerator, (req, res) => {
 
 
 router.get('/create', isAuthenticated, (req, res) => {
-  console.log("aaaaaaaaaaaaaaarrrrrrrrr")
   res.render('advertisements/create', { res});
 });
 module.exports = router;

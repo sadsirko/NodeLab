@@ -6,27 +6,31 @@
         <title>Create your advertisement</title>
         <link rel="stylesheet" href="/css/styles.css">
       </head>
-<body>
-    <%- include('../partials/header') %>
-
-    <h1>Create a New Advertisement</h1>
-
-    <form action="/api/advertisement/createAdvertisement" method="POST">
+      <body>
+        <%- include('../partials/header') %>
+        <div class="container">
+          <h1>Create a New Advertisement</h1>
+          <form action="/api/advertisement/createAdvertisement" method="POST">
+            
         <div>
             <label for="title">Title:</label>
-            <input type="text" name="title" id="title" required>
+            <input type="text" name="name" id="name" required>
         </div>
         <div>
-            <label for="description">Description:</label>
-            <textarea name="description" id="description" rows="4" required></textarea>
+            <label for="address">Address:</label>
+            <textarea name="address" id="address" rows="4" required></textarea>
+        </div>
+        <div>
+            <label for="detail">Detail:</label>
+            <textarea name="detail" id="detail" rows="4" required></textarea>
         </div>
         <div>
             <label for="price">Price:</label>
-            <input type="number" name="price" id="price" step="0.01" required>
+            <input type="number" name="price" id="price" step="1" required>
         </div>
         <button type="submit">Create Advertisement</button>
     </form>
-    <%- include('../partials/footer') %>
-
+</div>
+<%- include('../partials/footer') %>
 </body>
 </html>
