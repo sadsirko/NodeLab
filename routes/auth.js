@@ -15,24 +15,7 @@ const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: 'TOP_SECRET'
 };
-const authenticate = passport.authenticate('local', {session: true});
-
-// passport.use('jwt', new JwtStrategy(jwtOptions, function(jwtPayload, done) {
-//   fs.readFile(usersFilePath, (err, data) => {
-//     if (err) return done(err);
-
-//     const usersData = JSON.parse(data);
-//     const users = usersData.arr;
-
-//     const user = users.find(user => user.id == jwtPayload.user._id);
-
-//     if (user) {
-//       return done(null, user);
-//     } else {
-//       return done(null, false);
-//     }
-//   });
-// }));
+const authenticate = passport.authenticate('local',{ successRedirect: '/api/advertisement/allAdvertisement', failureRedirect: 'login' });
 
 
 
@@ -41,8 +24,9 @@ router.post('/signup', function(req, res, next) {
   console.log("hoi");
   console.dir(req.body);
 
-  var salt = crypto.randomBytes(16);
-  crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
+  let salt = crypto.randomBytes(16);
+  crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256',
+      function(err, hashedPassword) {
     if (err) { return next(err); }
 
     const newUser = new User(
@@ -56,7 +40,7 @@ router.post('/signup', function(req, res, next) {
     fs.readFile(usersFilePath, (err, data) => {
       if (!req.body.username || !req.body.email || !req.body.password) {
         req.flash('error', 'All fields are required.');
-        return res.redirect('/signup');
+        // return res.redirect('/signup');
       }
       if (err) {
         if (err.code === 'ENOENT') {
@@ -73,31 +57,31 @@ router.post('/signup', function(req, res, next) {
         // Перевірка, чи існує користувач з таким же ім'ям користувача
         const existingUser = users.find(user => user.username === req.body.username);
         if (existingUser) {
-          return res.status(400).render('auth/signup', { error: "Username already exists." });
+          return res.status(400).render('auth/signup', { res: res, error: "Username already exists." });
         }
 
         // Перевірка, чи існує користувач з такою ж електронною адресою
         const existingEmail = users.find(user => user.email === req.body.email);
         if (existingEmail) {
-          return res.status(400).render('auth/signup', { error: "Email already exists." });
+          return res.status(400).render('auth/signup', {res : res , error: "Email already exists." });
         }
 
         // console.log(newUser)
         users.push(newUser);
         fs.writeFileSync(usersFilePath, JSON.stringify({ arr: users }), 'utf8');
-        res.send("registered");
+        res.redirect('login');
       }
     });
   });
 
 
 
-  res.redirect('login');});
+  });
 
   require('../middlewares/config-passport');
-  
-  router.post('/login', authenticate, async (req, res, next) => {
-  passport.authenticate('local', async (err, user, info) => {
+
+router.post('/login', authenticate, async (req, res, next) => {
+  passport.authenticate('local',{ successRedirect: '/api/advertisement/allAdvertisement', failureRedirect: 'auth/login' }, async (err, user, info) => {
     console.log(user)
     try {
       if (err) {
@@ -106,18 +90,17 @@ router.post('/signup', function(req, res, next) {
       }
 
       if (!user) {
-        console.error(info); 
+        console.error(info);
         return res.status(401).render('auth/login', { error: "Incorrect username or password.", res });
-        
+
       }
 
       req.login(user, { session: false }, async (error) => {
         if (error) return next(error);
 
-        const body = { _id: user.id, username: user.username };
-        const token = jwt.sign({ user: body }, 'TOP_SECRET');
+        // const body = { _id: user.id, username: user.username };
+        // const token = jwt.sign({ user: body }, 'TOP_SECRET');
         req.session.user = user;
-        res.locals.user = user;
         return res.redirect('/api/advertisement/allAdvertisement');
       });
     } catch (error) {

@@ -218,3 +218,9 @@ button[type="submit"]:hover {
     margin-bottom: 1rem;
   }
 }
+
+.approved {
+  color: green;
+  font-weight: bold;
+  padding-left: 5px;
+}

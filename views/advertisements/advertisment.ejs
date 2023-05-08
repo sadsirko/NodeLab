@@ -7,13 +7,56 @@
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+<% console.log(res.req) %>
+
   <%- include('../partials/header') %>
   <div class="container">
     <h1><%= ad.name %></h1>
     <p>Price: <%= ad.price %></p>
     <p>Address: <%= ad.address %></p>
     <p>Details: <%= ad.detail %></p>
+    <p>Email: <%= ad._authorEmail %></p>
+    <% if ('passport' in res.req.session ) { %>
+      <% if (res.req.user.role == 'moderator' || res.req.user.role == 'admin'  ) { %>    
+        <form id="myform">
+          <input type="hidden" name="id" value=<%= ad.id %>>
+          <input type="hidden" name="approve" id="approve" value="true">
+          <button type="submit" onclick="sendData(event)">Approve</button>
+        </form>
+      <% } %>
+    <% } %>
   </div>
   <%- include('../partials/footer') %>
 </body>
 </html>
+
+<script>
+// function sendData(event) {
+//   event.preventDefault();
+//   var form = document.getElementById("myform");
+//   var data = new FormData(form);
+//   var xhr = new XMLHttpRequest();
+//   console.log(data)
+//   xhr.onreadystatechange = function() {
+//     if (xhr.readyState === 4 && xhr.status === 200) {
+//       console.log("nice")
+//     }
+//   };
+//   xhr.send(data);
+// }
+function sendData() {
+  var form = document.getElementById("myform");
+  var data = new FormData(form);
+  var xhr = new XMLHttpRequest();
+  console.log(data)
+
+  xhr.open("PATCH", "/api/advertisement/" + data.get('id') + "/approve");
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      // handle response from server
+    }
+  };
+  xhr.send(data);
+}
+
+</script>

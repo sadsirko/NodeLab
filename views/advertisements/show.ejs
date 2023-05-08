@@ -11,9 +11,13 @@
   <div class="container">
     <h1>All Advertisements</h1>
     <div class="ad-container">
-      <% allAdvertisement.arr.forEach(function(ad) { %>
+      <form action="/api/advertisement/search" method="GET" class="search-form">
+        <input type="text" name="search" id="search" placeholder="Search advertisements..." />
+        <button type="submit">Search</button>
+      </form>
+      <% allAdvertisement.forEach(function(ad) { %>
         <div class="ad">
-          <h2> <%= ad.name %></h2>
+          <h2> <%= ad.name %> <% if (ad.approved) { %><span class="approved">&#x2713;</span><% } %></h2>
           <p>detail: <%= ad.detail %></p>
           <a href="/api/advertisement/advertisementsById/<%= ad.id %>">
             <button type="submit">Choose</button>
@@ -24,5 +28,4 @@
   </div>
   <%- include('../partials/footer') %>
 </body>
-
 </html>

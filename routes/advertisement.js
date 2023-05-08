@@ -7,15 +7,17 @@ const filePath = './data/apartments.json';
 const isAuthenticated = require('../middlewares/isAuthenticated');
 const isAdmin = require('../middlewares/isAdmin');
 const isModerator = require('../middlewares/isModerator');
-
+const bodyParser = require('body-parser')
+// const parser = require('./parser')
 // POST /advertisements - Створення нового оголошення
-router.post('/createAdvertisement', isAuthenticated, (req, res) => {
+router.post('/createAdvertisement', isAuthenticated /*,parser.single('photo')*/, (req, res) => {
   // Зчитування даних з файлу
   let savedData = fs.readFileSync(filePath);
   let ads = JSON.parse(savedData);
-  console.log(req.body.detail, req.body.address, req.user.id.toString(), req.body.price, req.body.photo, req.body.name)
+  console.log(req.body.detail, req.body.address, req.user.id.toString(), req.body.price, [], req.body.name)
   const advertisement = new Advertisement(
-     req.body.detail, req.body.address, req.user.id.toString(), req.body.price, req.body.photo, req.body.name);
+     req.body.detail, req.body.address, req.user.id.toString(), req.body.price,  [], req.body.name,
+      req.user.email);
 
   // Додавання нового оголошення до масиву
   ads.arr.push(advertisement.toJSON());
@@ -34,7 +36,20 @@ router.get('/allAdvertisement', (req, res) => {
   // Зчитування даних з файлу
   let savedData = fs.readFileSync(filePath);
   let ads = JSON.parse(savedData);
-  res.render('advertisements/show', { allAdvertisement: ads ,res : res});
+  res.render('advertisements/show', { allAdvertisement: ads.arr ,res : res});
+});
+
+router.get('/search', (req, res) => {
+  // Зчитування даних з файлу
+  let searchStr = req.query.search;
+  console.log(searchStr);
+  let savedData = fs.readFileSync(filePath);
+  let ads = JSON.parse(savedData);
+  let filteredAds = ads.arr.filter(ad => ad.name.includes(searchStr));
+  console.log(filteredAds)
+  res.render('advertisements/show', { allAdvertisement: filteredAds ,res : res});
+  // res.send({ allAdvertisement: ads ,res : res})
+  // res.render('/advertisements/show', { allAdvertisement: ads ,res : res});
 });
 
 router.delete('/delete/:id', isAuthenticated, (req, res) => {
@@ -86,8 +101,13 @@ router.get('/advertisementsById/:id', (req, res) => {
   if (!ad) {
     return res.status(404).send("Advertisement not found.");
   }
-  res.render('advertisements/advertisment', { ad: ad , res});
-
+  if(isAuthenticated)
+  {
+    res.render('advertisements/advertisment', { ad: ad , user : req.user, res});
+  }
+  else{
+    res.render('advertisements/advertisment', { ad: ad , res});
+      }
 });
 
 router.put('/updateAdvertisement/:id', isAuthenticated, (req, res) => {
@@ -143,26 +163,23 @@ router.get('/author/:userId',isAuthenticated, (req, res) => {
   res.render('advertisements/userAdv', {allAdvertisement:userAds, res});
 });
 
-// PATCH /advertisements/:id/approve - Зміна поля "approved" для користувачів з роллю "moderator"
-router.patch('/:id/approve', isAuthenticated, isModerator, (req, res) => {
-
+router.patch('/:id/approve', bodyParser.json(), isAuthenticated, isModerator, (req, res) => {
   let savedData = fs.readFileSync(filePath);
   let ads = JSON.parse(savedData);
 
   const adIndex = ads.arr.findIndex(ad => ad.id === req.params.id);
-
+  console.log("inside")
   if (adIndex === -1) {
     return res.status(404).send("Advertisement not found.");
   }
-
-  ads.arr[adIndex].approved = true;
+  console.log(req.body)
+  ads.arr[adIndex].approved = req.body.approve;
 
   let jsonAds = JSON.stringify(ads);
   fs.writeFileSync(filePath, jsonAds);
 
   res.status(200).json(ads.arr[adIndex]);
 });
-
 
 router.get('/create', isAuthenticated, (req, res) => {
   res.render('advertisements/create', { res});

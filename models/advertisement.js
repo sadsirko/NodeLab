@@ -1,8 +1,9 @@
 const uuidv4 = require('uuid').v4;
 
 class Advertisement {
+
     constructor( detail, address, authorId, 
-      price, photo, name, id = uuidv4()) 
+      price, photo, name, authorEmail, id = uuidv4())
       {
       this.id = id;
       this.name = name;
@@ -12,13 +13,21 @@ class Advertisement {
       this.approved = false;
       this.photo = photo;
       this.price = price;
+      this._authorEmail = authorEmail;
+
       // Додаткові поля можна додати тут
     }
   
     approve(){
       this.approve = true;
     }
-    
+    get authorEmail() {
+        return this._authorEmail;
+    }
+
+    set authorEmail(value) {
+        this._authorEmail = value;
+    }
     getId() {
       return this.id;
     }
@@ -61,6 +70,9 @@ class Advertisement {
         approved: this.approved,
         photo: this.photo,
         price: this.price,
+        _authorEmail: this._authorEmail
+
+
       };
     }
   
