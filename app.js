@@ -75,7 +75,9 @@ app.use(cors());
 // Підключаємо роутер
 const router = require('./routes');
 app.use('/api', router);
-
+app.use('*', (req, res) => {
+  res.redirect('/api/advertisement/allAdvertisement');
+});
 // Запускаємо сервер
 app.listen(3000, () => {
   console.log('Server started on port 3000');
