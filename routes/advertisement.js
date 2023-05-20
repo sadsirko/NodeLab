@@ -21,7 +21,7 @@ router.get('/advertisementsById/:id',  advertisementController.getAdvertisementB
 
 router.put('/updateAdvertisement/:id', isAuthenticated,  advertisementController.updateAdvertisement);
 
-// router.get('/updateAdvertisement/:id', isAuthenticated,  advertisementController.updateAdvertisement);
+router.get('/updateAdvertisement/:id', isAuthenticated,  advertisementController.getUpdateAdvertisement);
 
 // GET /advertisements/author/:userId - Отримання всіх оголошень користувача за ID автора
 router.get('/author/:userId',isAuthenticated, advertisementController.getAdvertisementsByAuthor);
