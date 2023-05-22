@@ -5,6 +5,7 @@ const filePath = './data/apartments.json';
 const isModerator = require('../middlewares/isModerator');
 const bodyParser = require('body-parser')
 const { connect } = require('../db/mongo');
+const { incrVisits, getVisits } = require('../db/redis');
 const dbName = "mydatabase"
 
 async function createAdvertisement(req, res) {
@@ -57,17 +58,26 @@ async function getAdvertisementById(req, res) {
     const client = await connect();
     const db = client.db(dbName); // provide your DB name here
     const collection = db.collection('advertisements');
+    let views = 0;
+    try {
+        views = await incrVisits(req.params.id);
+        // console.log(await getVisits(req.params.id));
+    } catch(err) {
+        console.error('Redis operation failed: ', err);
+        // You might want to return or throw here, depending on your error handling strategy
+    }
 
+    // console.log(await getAdVisits(req.params.id));
     const ad = await collection.findOne({ id: req.params.id });
 
     if (!ad) {
         return res.status(404).send("Advertisement not found.");
     }
     if (isAuthenticated) {
-        res.render('advertisements/advertisment', { ad: ad, user: req.user, res });
+        res.render('advertisements/advertisment', { ad: ad, views: views , user: req.user, res });
     }
     else {
-        res.render('advertisements/advertisment', { ad: ad, res });
+        res.render('advertisements/advertisment', { ad: ad, res, views: views });
     }
 }
 async function updateAdvertisement(req, res) {
@@ -121,7 +131,6 @@ async function getAdvertisementsByAuthor(req, res) {
 }
 async function approveAdvertisement(req, res) {
     const adId = req.params.id;
-
     const client = await connect();
     const db = client.db(dbName); // provide your DB name here
     const collection = db.collection('advertisements');

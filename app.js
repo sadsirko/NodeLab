@@ -11,9 +11,18 @@ const secret = crypto.randomBytes(64).toString('hex');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const { disconect } = require('multer-storage-cloudinary');
+const { disconnect } = require('./db/mongo');
+
 require('./middlewares/config-passport');
 
 const MongoStore = require('connect-mongo');
+
+
+const { incrementAdVisits, getAdVisits } = require('./db/redis');
+// console.log
+// incrementAdVisits("225");
+// getAdVisits("225").then((res) => console.log(res)).catch((err) => console.error(err));
 
 app.use(express.static('public'));
 app.use(methodOverride('_method'));
@@ -65,3 +74,11 @@ app.use('*', (req, res) => {
 app.listen(3000, () => {
   console.log('Server started on port 3000');
 });
+// process.on('beforeExit', () => {
+//   // Close Redis connection
+//   console.log('Closing Redis connection...');
+//   client.quit(); // Assuming `client` is the Redis client instance
+//   // Close MongoDB connection
+//   console.log('Closing MongoDB connection...');
+//   server.close(); // Assuming `server` is the Express server instance
+// });

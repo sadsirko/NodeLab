@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<% console.log(res.req) %>
+<!--<%  %>-->
 
   <%- include('../partials/header') %>
   <div class="container">
@@ -23,8 +23,10 @@
           <input type="hidden" name="approve" id="approve" value="true">
           <button type="submit" onclick="sendData(event)">Approve</button>
         </form>
+
       <% } %>
     <% } %>
+    <p>Views: <%= views %></p>
   </div>
   <%- include('../partials/footer') %>
 </body>
@@ -48,7 +50,7 @@ function sendData() {
   var form = document.getElementById("myform");
   var data = new FormData(form);
   var xhr = new XMLHttpRequest();
-  console.log(data)
+  // console.log(data)
 
   xhr.open("PATCH", "/api/advertisement/" + data.get('id') + "/approve");
   xhr.onreadystatechange = function() {

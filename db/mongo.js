@@ -12,7 +12,7 @@ const client = new MongoClient(uri,  {
 });
 
 const connect = async () => {
-    console.log("conection")
+    // console.log("conection")
     try {
         if (!client.topology || !client.topology.isConnected()) await client.connect();
     } catch (error) {
