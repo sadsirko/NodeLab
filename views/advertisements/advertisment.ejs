@@ -12,12 +12,13 @@
   <%- include('../partials/header') %>
   <div class="container">
     <h1><%= ad.name %></h1>
+    <img src="<%= ad.photo %>" alt="<%= ad.name %>">
     <p>Price: <%= ad.price %></p>
     <p>Address: <%= ad.address %></p>
     <p>Details: <%= ad.detail %></p>
     <p>Email: <%= ad._authorEmail %></p>
     <% if ('passport' in res.req.session ) { %>
-      <% if (res.req.user.role == 'moderator' || res.req.user.role == 'admin'  ) { %>    
+      <% if (res.req.user.role == 'moderator' || res.req.user.role == 'admin'  ) { %>
         <form id="myform">
           <input type="hidden" name="id" value=<%= ad.id %>>
           <input type="hidden" name="approve" id="approve" value="true">

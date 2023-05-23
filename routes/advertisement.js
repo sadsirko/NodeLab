@@ -5,10 +5,10 @@ const isAdmin = require('../middlewares/isAdmin');
 const isModerator = require('../middlewares/isModerator');
 const bodyParser = require('body-parser')
 const advertisementController = require('../controllers/advertisementController');
-
+const { parser } = require('../db/cloudinary');
 // const parser = require('./parser')
 // POST /advertisements - Створення нового оголошення
-router.post('/createAdvertisement', isAuthenticated /*,parser.single('photo')*/,advertisementController.createAdvertisement);
+router.post('/createAdvertisement', isAuthenticated ,parser.single('photo'),advertisementController.createAdvertisement);
 
 router.get('/allAdvertisement', advertisementController.getAllAdvertisements);
 

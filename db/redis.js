@@ -25,7 +25,7 @@ client.on('ready', ()=> console.log('Connected'));
 
 async function incrVisits(key) {
     const currVisits = await client.get(key) || 0;
-    console.log(currVisits)
+    // console.log(currVisits)
     await client.set(key, parseInt(currVisits) + 1);
     return parseInt(currVisits) + 1;
 }

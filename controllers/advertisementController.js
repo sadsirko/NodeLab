@@ -10,12 +10,21 @@ const dbName = "mydatabase"
 
 async function createAdvertisement(req, res) {
     const client = await connect();
-    const db = client.db(dbName); // provide your DB name here
+    const db = client.db(dbName);
     const collection = db.collection('advertisements');
 
     const advertisement = new Advertisement(
-        req.body.detail, req.body.address, req.user.id.toString(), req.body.price,  [], req.body.name,
+        req.body.detail, req.body.address, req.user.id.toString(), req.body.price, [], req.body.name,
         req.user.email);
+
+    // Check if a file has been uploaded
+    if (req.file) {
+        console.log(req.file)
+        console.log(req.file.path)
+        // If a file has been uploaded, add the Cloudinary URL for the image to the advertisement object
+        advertisement.photo = req.file.path;
+
+    }
 
     await collection.insertOne(advertisement.toJSON());
 

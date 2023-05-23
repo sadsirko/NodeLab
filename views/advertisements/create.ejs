@@ -10,8 +10,11 @@
         <%- include('../partials/header') %>
         <div class="container">
           <h1>Create a New Advertisement</h1>
-          <form action="/api/advertisement/createAdvertisement" method="POST">
-            
+          <form action="/api/advertisement/createAdvertisement" method="POST" enctype="multipart/form-data">
+              <div>
+                  <label for="photo">Photo:</label>
+                  <input type="file" name="photo" id="photo" accept="image/*" required>
+              </div>
         <div>
             <label for="title">Title:</label>
             <input type="text" name="name" id="name" required>

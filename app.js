@@ -8,21 +8,15 @@ const path = require('path');
 const methodOverride = require('method-override');
 const app = express();
 const secret = crypto.randomBytes(64).toString('hex');
-const cloudinary = require('cloudinary').v2;
-const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const { disconect } = require('multer-storage-cloudinary');
 const { disconnect } = require('./db/mongo');
+require('dotenv').config()
 
 require('./middlewares/config-passport');
-
 const MongoStore = require('connect-mongo');
 
 
-const { incrementAdVisits, getAdVisits } = require('./db/redis');
-// console.log
-// incrementAdVisits("225");
-// getAdVisits("225").then((res) => console.log(res)).catch((err) => console.error(err));
 
 app.use(express.static('public'));
 app.use(methodOverride('_method'));
@@ -35,6 +29,7 @@ const corsOptions = {
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE']
 };
+
 app.use(cors(corsOptions));
 
 
@@ -60,7 +55,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Підключаємо middleware
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
